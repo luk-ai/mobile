@@ -31,6 +31,7 @@ var (
 	prefix        = flag.String("prefix", "", "custom Objective-C name prefix. Valid only with -lang=objc.")
 	bootclasspath = flag.String("bootclasspath", "", "Java bootstrap classpath.")
 	classpath     = flag.String("classpath", "", "Java classpath.")
+	nativeLibs    = flag.String("nativelibs", "", "Native libraries (libfoo.so) to include in the output. Comma separated.")
 )
 
 var usage = `The Gobind tool generates Java language bindings for Go.

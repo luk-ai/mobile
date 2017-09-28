@@ -82,20 +82,19 @@ func genPkg(p *types.Package, allPkg []*types.Package, classes []*java.Class) {
 				errorf(`"golang.org/x/mobile/bind" is not found; run go get golang.org/x/mobile/bind: %v`)
 				return
 			}
-			repo := filepath.Clean(filepath.Join(p.Dir, "..")) // golang.org/x/mobile directory.
-			for _, javaFile := range []string{"Seq.java", "LoadJNI.java"} {
-				src := filepath.Join(repo, "bind/java/"+javaFile)
-				in, err := os.Open(src)
-				if err != nil {
-					errorf("failed to open Java support file: %v", err)
-				}
-				defer in.Close()
-				w, closer := writer(filepath.Join("go", javaFile))
-				defer closer()
-				if _, err := io.Copy(w, in); err != nil {
-					errorf("failed to copy Java support file: %v", err)
-					return
-				}
+			if err := bind.GenerateJavaSupport(
+				p,
+				bind.NativeMeta{
+					Libs: strings.Split(*nativeLibs, ","),
+				},
+				"go",
+				func(fpath string) (io.Writer, func(), error) {
+					w, closer := writer(fpath)
+					return w, closer, nil
+				},
+			); err != nil {
+				errorf(`failed to generate support libraries: %v`, err)
+				return
 			}
 		}
 	case "go":

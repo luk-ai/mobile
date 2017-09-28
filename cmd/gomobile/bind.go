@@ -32,7 +32,7 @@ import (
 var cmdBind = &command{
 	run:   runBind,
 	Name:  "bind",
-	Usage: "[-target android|ios] [-bootclasspath <path>] [-classpath <path>] [-o output] [build flags] [package]",
+	Usage: "[-target android|ios] [-bootclasspath <path>] [-classpath <path>] [-nativelibs <path>[,<path>...]] [-o output] [build flags] [package]",
 	Short: "build a library for Android and iOS",
 	Long: `
 Bind generates language bindings for the package named by the import
@@ -155,6 +155,7 @@ var (
 	bindJavaPkg       string // -javapkg
 	bindClasspath     string // -classpath
 	bindBootClasspath string // -bootclasspath
+	nativeLibs        string // -nativelibs
 )
 
 func init() {
@@ -165,6 +166,7 @@ func init() {
 		"custom Objective-C name prefix. Valid only with -target=ios.")
 	cmdBind.flag.StringVar(&bindClasspath, "classpath", "", "The classpath for imported Java classes. Valid only with -target=android.")
 	cmdBind.flag.StringVar(&bindBootClasspath, "bootclasspath", "", "The bootstrap classpath for imported Java classes. Valid only with -target=android.")
+	cmdBind.flag.StringVar(&nativeLibs, "nativelibs", "", "Native libraries (libfoo.so) to include in the output. Comma separated.")
 }
 
 type binder struct {

@@ -104,6 +104,10 @@ func buildEnvInit() (cleanup func(), err error) {
 	return cleanupFn, nil
 }
 
+func libDir(arch string) string {
+	return filepath.Join(gomobilepath, "lib", arch)
+}
+
 func envInit() (err error) {
 	// TODO(crawshaw): cwd only used by ctx.Import, which can take "."
 	cwd, err = os.Getwd()
@@ -128,7 +132,7 @@ func envInit() (err error) {
 			gcctoolchain := filepath.Join(ndkRoot, "toolchains", toolchain.gcc, "prebuilt", archNDK())
 			flags := fmt.Sprintf("-target %s --sysroot %s -gcc-toolchain %s", target, sysroot, gcctoolchain)
 			cflags := fmt.Sprintf("%s -I%s/include", flags, gomobilepath)
-			ldflags := fmt.Sprintf("%s -L%s/usr/lib -L%s/lib/%s", flags, sysroot, gomobilepath, arch)
+			ldflags := fmt.Sprintf("%s -L%s/usr/lib -L%s", flags, sysroot, libDir(arch))
 			androidEnv[arch] = []string{
 				"GOOS=android",
 				"GOARCH=" + arch,

@@ -20,6 +20,9 @@ public class LoadJNI {
         public static final Object ctx;
 
         static {
+                {{range .Libs}}
+                System.loadLibrary("{{.}}");
+                {{end}}
                 System.loadLibrary("gojni");
 
                 Object androidCtx = null;
